@@ -21,6 +21,7 @@ interface Message {
     conversation_id?: number;
     id: number;
     message_context: MessageContextPayload;
+
 }
 
  
@@ -48,7 +49,7 @@ const ChatBox: React.FC = () => {
       created_at: new Date().toISOString(),  
       updated_at: new Date().toISOString(),
       message_context: {
-        text: payload.text  
+        text: "This is a demo response" 
       },
     };
   
@@ -63,7 +64,13 @@ const ChatBox: React.FC = () => {
       };
       setMessages([...messages, newMessage]);
       const botResponse = mockSendMessage(newMessage);
-      console.log(botResponse);
+      const botsMessage: Message = {
+        id: botResponse.id,
+        text: botResponse.message_context.text,  // Take text from message_context
+        sender: "bot",
+      };
+      setMessages([...messages, newMessage, botsMessage]);
+      console.log(botResponse,"MessagePublic");  //The Message public response from the mock function
       setInputValue("");
     }
   };

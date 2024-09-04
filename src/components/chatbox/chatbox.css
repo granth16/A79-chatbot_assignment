@@ -16,7 +16,16 @@
     margin-bottom: 10px;
     display: flex;
     flex-direction: column;
+    max-height: 82vh;
+  
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
   }
+  
+  .messages-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+  
   
   .message {
     margin: 10px 0;

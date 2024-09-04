@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
-import "ag-grid-community/styles/ag-theme-balham.css";
-import "ag-grid-community/styles/ag-theme-material.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
+import { AgGridReact } from "ag-grid-react";
 import "./usersgrid.css";
-import { ColDef } from "ag-grid-community";
+import { ColDef, FilterModel } from "ag-grid-community";
 
-const CountryFormatter = (props: CustomCellRendererProps) => {
+const CountryFormatter = (props: any) => {
   return (
     <span>
       <i className={`fi fi-${props.value.flag}`} style={{ margin: "5px" }}></i>{" "}
@@ -24,6 +21,9 @@ export interface UserInterface {
   country: { name: string; flag: string };
   games: string;
 }
+interface MessageContextPayload {
+    'tabular_data'?: string;
+  }
 
 // Mock function to simulate API response
 const fetchMockUsers = (): Promise<UserInterface[]> => {
@@ -162,25 +162,72 @@ const UsersGrid: React.FC = () => {
     { field: "language", filter: true },
     { field: "games", filter: true },
   ]);
-  const defaultColDef = {
-    flex: 1,
-  };
+  const defaultColDef = { flex: 1, filter: true };
+  const [appliedFilters, setAppliedFilters] = useState<string[]>([]);
+  const gridApiRef = useRef<any>(null);
 
   useEffect(() => {
-    // Use the mock function instead of fetching from API
     fetchMockUsers().then((data) => setRowData(data));
   }, []);
 
+  const onFilterChanged = useCallback((params: { api: any }) => {
+    const filterModel: FilterModel = params.api.getFilterModel();
+    const filtersArray = Object.keys(filterModel).map((field) => {
+      // Display only "Filter by [Field Name]"
+      const formattedField = field.charAt(0).toUpperCase() + field.slice(1);
+      return `Filter by ${formattedField}`;
+    });
+    setAppliedFilters(filtersArray);
+  }, []);
+
+  // Function to remove a specific filter by field
+  const removeFilter = (field: string) => {
+    if (gridApiRef.current) {
+      const api = gridApiRef.current.api;
+      api.getFilterInstance(field, (filterInstance: any) => {
+        filterInstance.setModel(null); // Clear the filter
+        api.onFilterChanged(); // Refresh grid filters
+      });
+    }
+  };
+
   return (
-    <div
-      className='ag-theme-alpine-dark'
-      style={{ height: "100%", width: "100%" }}
-    >
-      <AgGridReact
-        rowData={rowData}
-        columnDefs={colDefs}
-        defaultColDef={defaultColDef}
-      />
+    <div style={{ height: "100%", width: "100%" }}>
+      <div style={{ marginBottom: "10px" }}>
+        {/* Display applied filters as chips */}
+        {appliedFilters.map((filter, index) => {
+          const field = filter.replace("Filter by ", "").toLowerCase();
+          return (
+            <span
+              key={index}
+              style={{
+                display: "inline-block",
+                backgroundColor: "#16161e",
+                padding: "5px 10px",
+                borderRadius: "15px",
+                marginRight: "5px",
+                cursor: "pointer",
+                color: "white",
+              }}
+              onClick={() => removeFilter(field)}
+            >
+              {filter} <span style={{ marginLeft: "5px" }}>✕</span>
+            </span>
+          );
+        })}
+      </div>
+      <div
+        className='ag-theme-alpine-dark'
+        style={{ height: "100%", width: "100%" }}
+      >
+        <AgGridReact
+          ref={gridApiRef}
+          rowData={rowData}
+          columnDefs={colDefs}
+          defaultColDef={defaultColDef}
+          onFilterChanged={onFilterChanged}
+        />
+      </div>
     </div>
   );
 };
