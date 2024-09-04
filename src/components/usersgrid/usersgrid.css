@@ -1,0 +1,29 @@
+.ag-theme-alpine-dark {
+    --ag-background-color: #16161e; /* Background color */
+    --ag-odd-row-background-color: #16161e; /* Alternating row background */
+    --ag-header-background-color: #20202a; /* Header background */
+    --ag-header-foreground-color: #ffffff; /* Header text color */
+    --ag-font-size: 16px; /* Font size */
+    --ag-row-border-color: rgba(221, 226, 235, 1); /* Border color between rows */
+    --ag-border-radius: 5px; /* Rounded corners */
+    --ag-grid-size: 8px;
+    --ag-header-column-resize-handle-color: #fff;
+    --ag-row-hover-color: #1b1b25;
+    /* --ag-cell-horizontal-padding: 24px; */
+}
+
+.ag-theme-alpine-dark .ag-root-wrapper {
+    border: none; /* Remove outer border */
+}
+
+.ag-theme-alpine-dark .ag-header-cell {
+    border-bottom: 1px solid #2b2b3b; /* Header border color */
+}
+
+.ag-theme-alpine-dark .ag-row {
+    border-bottom: 1px solid rgba(221, 226, 235, 1); /* Row bottom border */
+}
+
+.ag-theme-alpine-dark .ag-cell {
+    color: #fff; /* Text color */
+}

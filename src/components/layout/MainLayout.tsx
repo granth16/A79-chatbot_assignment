@@ -1,6 +1,8 @@
-import React from "react";
 
-import Back from "../../images/back.svg";
+import React from "react";
+import ChatBox from "../chatbox/ChatBox";
+import UsersGrid from "../usersgrid/UsersGrid";
+import Back from "../images/back.svg";
 import "./layout.css";
 
 const MainLayout = () => {
@@ -12,11 +14,11 @@ const MainLayout = () => {
             <h2>Table Name 123</h2>
             <img src={Back} alt='Back icon' className='back-icon' width={40} />
           </div>
-          {/* <UsersGrid /> */}
+          <UsersGrid />
         </div>
-        {/* <div className='layout_inner_chat'>
+        <div className='layout_inner_chat'>
           <ChatBox />
-        </div> */}
+        </div>
       </div>
     </div>
   );

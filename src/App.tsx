@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import Navbar from "./components/navbar/Navbar";
-
-
+import MainLayout from "./components/layout/MainLayout";
 
 function App() {
   // Custom hook to detect small screen sizes
@@ -15,7 +14,7 @@ function App() {
       // Set initial value based on current matches
       setIsSmallScreen(mediaQuery.matches);
 
-      // Defining the handler with proper typing for TypeScript
+      // Define the handler with proper typing for TypeScript
       const handleMediaQueryChange = (e: MediaQueryListEvent) =>
         setIsSmallScreen(e.matches);
 
@@ -40,9 +39,9 @@ function App() {
         <div className='small-screen-warning'>
           <p>For a better experience, please view on a larger screen.</p>
         </div>
-      ) : 
-     
-      (<Navbar/>)}
+      ) : (
+        <MainLayout />
+      )}
     </div>
   );
 }
