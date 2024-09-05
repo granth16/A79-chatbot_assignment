@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
+import { MdContentCopy } from "react-icons/md";
 import "./chatbox.css";
 
 interface Message {
@@ -38,7 +39,8 @@ const ChatBox: React.FC = () => {
       sender: "bot",
     },
   ]);
- let messageIdCounter=1;
+  const [copiedMessageId, setCopiedMessageId] = useState<number | null>(null);
+
   const [inputValue, setInputValue] = useState("");
   const mockSendMessage = (payload: Message): MessagePublic => {
     const response: MessagePublic = {
@@ -54,6 +56,13 @@ const ChatBox: React.FC = () => {
     };
   
     return response;
+  };
+  const handleCopy = (text: string, id: number) => {
+    navigator.clipboard.writeText(text);
+    setCopiedMessageId(id); // Set the copied message ID
+    setTimeout(() => {
+      setCopiedMessageId(null); // Reset the copied message ID after 2 seconds
+    }, 2000);
   };
   const handleSendMessage = () => {
     if (inputValue.trim() !== "") {
@@ -79,10 +88,25 @@ const ChatBox: React.FC = () => {
     <div className='chatbox'>
       <div className='messages-container'>
         {messages.map((message) => (
-          <div key={message.id} className={`message ${message.sender}`}>
+          <React.Fragment key={message.id}>
+          <div className={`message ${message.sender}`}>
             <div className='profile-pic'>N</div>
             <p>{message.text}</p>
           </div>
+          {message.sender === "bot" && (
+            <div className='copy-button-container'>
+              <button
+                className='copy-button'
+                onClick={() => handleCopy(message.text, message.id)}
+              >
+                <MdContentCopy className='copy-icon' />
+                {copiedMessageId === message.id && (
+                  <span className='copied-text'>Copied! </span>
+                )}
+              </button>
+            </div>
+          )}
+        </React.Fragment>
         ))}
       </div>
       <div className='input-container'>
